@@ -1,5 +1,7 @@
 # GCC Sarl – site vitrine
 
+Projet pour un site 3D SarlGcc.
+
 Next.js (App Router) + TypeScript, français et anglais (`/fr`, `/en`).
 
 ## Lancer
