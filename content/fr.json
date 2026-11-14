@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "title": "GCC Sarl | Études, construction et rénovation en RDC",
+    "description": "Group Congo Construct (GCC Sarl), basée à Lubumbashi, étudie, construit et rénove pour les particuliers et les entreprises dans toute la RDC."
+  },
+  "tagline": "Étudier juste. Construire durable.",
+  "nav": { "home": "Accueil", "services": "Services", "realisations": "Réalisations", "contact": "Contact" },
+  "hero": {
+    "title": "Étudier juste. Construire durable.",
+    "text": "GCC Sarl conçoit, construit et rénove pour les particuliers et les entreprises, partout en République démocratique du Congo.",
+    "cta": "Demander un devis"
+  },
+  "about": {
+    "title": "Une entreprise congolaise, depuis 2018",
+    "text": "Group Congo Construct est installée à Lubumbashi et intervient dans toute la RDC. Nous commençons chaque projet par l'étude : un projet bien étudié se construit mieux, coûte moins cher et dure plus longtemps."
+  },
+  "services": {
+    "title": "Nos services",
+    "intro": "De l'étude à la livraison, un seul interlocuteur.",
+    "items": [
+      { "title": "Études et conseils", "text": "Faisabilité, plans, estimation des coûts et accompagnement technique avant de lancer vos travaux." },
+      { "title": "Construction", "text": "Bâtiments neufs, du gros œuvre aux finitions, pour le logement comme pour l'activité professionnelle." },
+      { "title": "Rénovation", "text": "Réhabilitation, extension et remise en état de bâtiments existants." }
+    ]
+  },
+  "realisations": {
+    "title": "Nos réalisations",
+    "intro": "Une sélection de nos chantiers.",
+    "soon": "Projet à venir"
+  },
+  "testimonials": { "title": "Ils nous font confiance" },
+  "contact": {
+    "title": "Parlons de votre projet",
+    "intro": "Décrivez-nous votre projet par WhatsApp ou par e-mail. Nous vous répondons avec une proposition.",
+    "whatsapp": "Écrire sur WhatsApp",
+    "whatsappMessage": "Bonjour GCC Sarl, je souhaite un devis pour un projet.",
+    "email": "Envoyer un e-mail",
+    "area": "Lubumbashi, intervention dans toute la RDC"
+  },
+  "footer": { "rights": "Tous droits réservés." }
+}
