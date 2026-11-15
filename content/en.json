@@ -4,7 +4,12 @@
     "description": "Group Congo Construct (GCC Sarl), based in Lubumbashi, designs, builds and renovates for individuals and businesses across the DRC."
   },
   "tagline": "Plan right. Build to last.",
-  "nav": { "home": "Home", "services": "Services", "realisations": "Projects", "contact": "Contact" },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "realisations": "Projects",
+    "contact": "Contact"
+  },
   "hero": {
     "title": "Plan right. Build to last.",
     "text": "GCC Sarl designs, builds and renovates for individuals and businesses throughout the Democratic Republic of the Congo.",
@@ -18,17 +23,28 @@
     "title": "Our services",
     "intro": "From study to handover, a single point of contact.",
     "items": [
-      { "title": "Studies and consulting", "text": "Feasibility, plans, cost estimates and technical support before you start your works." },
-      { "title": "Construction", "text": "New buildings, from structure to finishing, for housing and for business use." },
-      { "title": "Renovation", "text": "Rehabilitation, extension and restoration of existing buildings." }
+      {
+        "title": "Studies and consulting",
+        "text": "Feasibility, plans, cost estimates and technical support before you start your works."
+      },
+      {
+        "title": "Construction",
+        "text": "New buildings, from structure to finishing, for housing and for business use."
+      },
+      {
+        "title": "Renovation",
+        "text": "Rehabilitation, extension and restoration of existing buildings."
+      }
     ]
   },
   "realisations": {
     "title": "Our projects",
     "intro": "A selection of our sites.",
-    "soon": "Upcoming project"
+    "soon": "Our projects will be shown here soon."
   },
-  "testimonials": { "title": "They trust us" },
+  "testimonials": {
+    "title": "They trust us"
+  },
   "contact": {
     "title": "Let's talk about your project",
     "intro": "Describe your project by WhatsApp or e-mail. We reply with a proposal.",
@@ -37,5 +53,23 @@
     "email": "Send an e-mail",
     "area": "Lubumbashi, working across the DRC"
   },
-  "footer": { "rights": "All rights reserved." }
+  "footer": {
+    "rights": "All rights reserved."
+  },
+  "parcours": {
+    "label": "Construction stages",
+    "steps": [
+      "Solid foundations",
+      "The walls rise",
+      "The roof frame",
+      "The roof",
+      "Plaster and fittings",
+      "Delivered, ready to live in"
+    ],
+    "next": "Next stage",
+    "prev": "Previous stage",
+    "restart": "Watch again",
+    "loading": "Loading video",
+    "goto": "Go to stage"
+  }
 }

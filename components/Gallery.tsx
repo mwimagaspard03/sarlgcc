@@ -4,9 +4,11 @@ import { getRealisations, getDict, type Lang } from "@/lib/content";
 // Ajouter une réalisation : photo dans public/realisations/ + une entrée dans content/realisations.json
 export default function Gallery({ lang }: { lang: Lang }) {
   const d = getDict(lang);
+  const items = getRealisations(lang);
+  if (items.length === 0) return <p className="lead">{d.realisations.soon}</p>;
   return (
     <div className="gallery">
-      {getRealisations(lang).map((r, i) => (
+      {items.map((r, i) => (
         <figure key={i} className="project">
           {r.image ? (
             <Image src={`/realisations/${r.image}`} alt={r.title} width={800} height={600} />

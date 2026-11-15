@@ -1,10 +1,14 @@
 import fr from "@/content/fr.json";
 import en from "@/content/en.json";
-import realisations from "@/content/realisations.json";
+import realisationsJson from "@/content/realisations.json";
 import temoignages from "@/content/temoignages.json";
 
 export const langs = ["fr", "en"] as const;
 export type Lang = (typeof langs)[number];
+
+type Bilingual = { fr: string; en: string };
+type Realisation = { image: string | null; title: Bilingual; description: Bilingual };
+const realisations: Realisation[] = realisationsJson; // typé à la main : le JSON vide est inféré comme never[]
 
 const dicts = { fr, en };
 
@@ -18,7 +22,7 @@ export const getRealisations = (l: Lang) =>
   realisations.map((r) => ({
     title: r.title[l],
     description: r.description[l],
-    image: r.image as string | null,
+    image: r.image,
   }));
 
 type Temoignage = { name: string; text: { fr: string; en: string } };

@@ -12,7 +12,6 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
       <h1>{d.contact.title}</h1>
       <p className="lead">{d.contact.intro}</p>
       <ContactLinks lang={lang} />
-      <p className="muted">{d.contact.area}</p>
     </section>
   );
 }

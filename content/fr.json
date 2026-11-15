@@ -4,7 +4,12 @@
     "description": "Group Congo Construct (GCC Sarl), basée à Lubumbashi, étudie, construit et rénove pour les particuliers et les entreprises dans toute la RDC."
   },
   "tagline": "Étudier juste. Construire durable.",
-  "nav": { "home": "Accueil", "services": "Services", "realisations": "Réalisations", "contact": "Contact" },
+  "nav": {
+    "home": "Accueil",
+    "services": "Services",
+    "realisations": "Réalisations",
+    "contact": "Contact"
+  },
   "hero": {
     "title": "Étudier juste. Construire durable.",
     "text": "GCC Sarl conçoit, construit et rénove pour les particuliers et les entreprises, partout en République démocratique du Congo.",
@@ -18,17 +23,28 @@
     "title": "Nos services",
     "intro": "De l'étude à la livraison, un seul interlocuteur.",
     "items": [
-      { "title": "Études et conseils", "text": "Faisabilité, plans, estimation des coûts et accompagnement technique avant de lancer vos travaux." },
-      { "title": "Construction", "text": "Bâtiments neufs, du gros œuvre aux finitions, pour le logement comme pour l'activité professionnelle." },
-      { "title": "Rénovation", "text": "Réhabilitation, extension et remise en état de bâtiments existants." }
+      {
+        "title": "Études et conseils",
+        "text": "Faisabilité, plans, estimation des coûts et accompagnement technique avant de lancer vos travaux."
+      },
+      {
+        "title": "Construction",
+        "text": "Bâtiments neufs, du gros œuvre aux finitions, pour le logement comme pour l'activité professionnelle."
+      },
+      {
+        "title": "Rénovation",
+        "text": "Réhabilitation, extension et remise en état de bâtiments existants."
+      }
     ]
   },
   "realisations": {
     "title": "Nos réalisations",
     "intro": "Une sélection de nos chantiers.",
-    "soon": "Projet à venir"
+    "soon": "Nos réalisations seront bientôt présentées ici."
   },
-  "testimonials": { "title": "Ils nous font confiance" },
+  "testimonials": {
+    "title": "Ils nous font confiance"
+  },
   "contact": {
     "title": "Parlons de votre projet",
     "intro": "Décrivez-nous votre projet par WhatsApp ou par e-mail. Nous vous répondons avec une proposition.",
@@ -37,5 +53,23 @@
     "email": "Envoyer un e-mail",
     "area": "Lubumbashi, intervention dans toute la RDC"
   },
-  "footer": { "rights": "Tous droits réservés." }
+  "footer": {
+    "rights": "Tous droits réservés."
+  },
+  "parcours": {
+    "label": "Étapes de construction",
+    "steps": [
+      "Des fondations solides",
+      "Les murs s'élèvent",
+      "La charpente",
+      "La toiture",
+      "Crépi et menuiseries",
+      "Livré, prêt à vivre"
+    ],
+    "next": "Étape suivante",
+    "prev": "Étape précédente",
+    "restart": "Revoir depuis le début",
+    "loading": "Chargement de la vidéo",
+    "goto": "Aller à l'étape"
+  }
 }
