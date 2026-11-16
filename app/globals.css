@@ -102,10 +102,19 @@ button.btn { font: inherit; font-weight: 600; cursor: pointer; }
 .controls button:disabled { opacity: 0.45; cursor: default; }
 .controls button:focus-visible, .dot:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
-/* Téléphone en portrait : scène 9:16, hauteur limitée pour garder la suite de la page visible */
+/* Téléphone en portrait : scène 9:16 pleine largeur (sans hauteur maximale), texte superposé en bas sur un léger dégradé, commandes dessous */
 @media (max-width: 899px) and (orientation: portrait) {
-  .stage { aspect-ratio: 9 / 16; max-height: 78svh; }
+  .parcours { display: grid; }
+  .stage { grid-area: 1 / 1; align-self: start; aspect-ratio: 9 / 16; }
+  .shade { display: block; background: linear-gradient(to top, rgba(21, 18, 14, 0.72), rgba(21, 18, 14, 0) 45%); }
+  .panel { display: contents; }
+  .copy { grid-area: 1 / 1; align-self: end; position: relative; z-index: 6; padding: 0 clamp(1rem, 5vw, 2rem) 1.25rem; }
+  .controls { grid-area: 2 / 1; padding: 1rem clamp(1rem, 5vw, 2rem) 1.5rem; }
 }
+
+/* Changement d'étape : le texte apparaît en glissant légèrement (désactivé si l'utilisateur réduit les animations) */
+@keyframes copy-in { from { opacity: 0; transform: translateY(0.6rem); } }
+@media (prefers-reduced-motion: no-preference) { .copy-in { animation: copy-in 0.25s ease-out; } }
 
 @media (min-width: 900px) and (min-aspect-ratio: 3 / 2) {
   .stage { aspect-ratio: auto; height: min(84svh, 780px); }

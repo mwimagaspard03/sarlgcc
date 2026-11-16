@@ -66,10 +66,20 @@
       "Plaster and fittings",
       "Delivered, ready to live in"
     ],
+    "descriptions": [
+      "The site is ready and the foundations mark out where the future house will stand.",
+      "The walls rise and gradually shape the spaces of the house.",
+      "The roof frame takes shape and prepares for the roof to be laid.",
+      "The roof is laid and covers the frame.",
+      "The plaster goes on and the doors and windows are fitted.",
+      "The house is finished, with its surroundings landscaped."
+    ],
     "next": "Next stage",
     "prev": "Previous stage",
     "restart": "Watch again",
     "loading": "Loading video",
-    "goto": "Go to stage"
+    "goto": "Go to stage",
+    "pause": "Pause automatic playback",
+    "play": "Resume automatic playback"
   }
 }
