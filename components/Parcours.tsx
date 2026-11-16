@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useRef, useState, useSyncExternalStore, type KeyboardEvent, type PointerEvent } from "react";
 
 type Props = {
   lang: string;
@@ -21,6 +21,14 @@ const STILLS = ["B", "C", "D", "E", "F", "G"];
 const CLIPS = ["1-BC", "2-CD", "3-DE", "4-EF", "5-FG"];
 const LAST = STILLS.length - 1;
 
+// Téléphone en portrait : on sert les médias 9:16 (fichiers mobile-*)
+const MOBILE = "(max-width: 899px) and (orientation: portrait)";
+const subscribe = (cb: () => void) => {
+  const mq = window.matchMedia(MOBILE);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+
 const Chevron = ({ dir }: { dir: "left" | "right" }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
     <path d={dir === "left" ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"} />
@@ -28,6 +36,8 @@ const Chevron = ({ dir }: { dir: "left" | "right" }) => (
 );
 
 export default function Parcours({ lang, hero, parcours }: Props) {
+  // null tant que la page n'est pas hydratée : les vidéos n'ont alors pas de src, donc aucun téléchargement en double
+  const mobile = useSyncExternalStore<boolean | null>(subscribe, () => window.matchMedia(MOBILE).matches, () => null);
   const [index, setIndex] = useState(0); // étape affichée
   const [playing, setPlaying] = useState<number | null>(null); // clip en cours
   const [waiting, setWaiting] = useState(false); // clip lancé mais pas encore en lecture
@@ -98,14 +108,16 @@ export default function Parcours({ lang, hero, parcours }: Props) {
     >
       <div className="stage">
         {STILLS.map((s, i) => (
-          <img
-            key={s}
-            src={`/parcours/etape-${s}.webp`}
-            alt=""
-            draggable={false}
-            fetchPriority={i === 0 ? "high" : undefined}
-            className={`still${i === index ? " on" : ""}`}
-          />
+          <picture key={s}>
+            <source media={MOBILE} srcSet={`/parcours/mobile-etape-${s}.webp`} />
+            <img
+              src={`/parcours/etape-${s}.webp`}
+              alt=""
+              draggable={false}
+              fetchPriority={i === 0 ? "high" : undefined}
+              className={`still${i === index ? " on" : ""}`}
+            />
+          </picture>
         ))}
         {CLIPS.map((c, i) => (
           <video
@@ -113,7 +125,7 @@ export default function Parcours({ lang, hero, parcours }: Props) {
             ref={(el) => {
               videos.current[i] = el;
             }}
-            src={`/parcours/${c}.mp4`}
+            src={mobile === null ? undefined : `/parcours/${mobile ? "mobile-" : ""}${c}.mp4`}
             muted
             playsInline
             aria-hidden="true"

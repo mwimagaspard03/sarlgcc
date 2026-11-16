@@ -102,6 +102,11 @@ button.btn { font: inherit; font-weight: 600; cursor: pointer; }
 .controls button:disabled { opacity: 0.45; cursor: default; }
 .controls button:focus-visible, .dot:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
+/* Téléphone en portrait : scène 9:16, hauteur limitée pour garder la suite de la page visible */
+@media (max-width: 899px) and (orientation: portrait) {
+  .stage { aspect-ratio: 9 / 16; max-height: 78svh; }
+}
+
 @media (min-width: 900px) and (min-aspect-ratio: 3 / 2) {
   .stage { aspect-ratio: auto; height: min(84svh, 780px); }
   .stage img, .stage video { object-position: 50% 65%; }
