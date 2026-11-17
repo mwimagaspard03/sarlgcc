@@ -67,19 +67,18 @@
       "Livré, prêt à vivre"
     ],
     "descriptions": [
-      "Le terrain est prêt et les fondations marquent l'emplacement de la future maison.",
+      "La dalle est coulée et les armatures attendent la montée des murs.",
       "Les murs s'élèvent et dessinent progressivement les espaces de la maison.",
       "La charpente prend forme et prépare la mise en place de la toiture.",
       "La toiture est posée et recouvre la charpente.",
       "Le crépi est appliqué et les portes et fenêtres prennent place.",
-      "La maison est terminée, avec ses abords aménagés."
+      "La maison est terminée, avec son allée pavée, sa pelouse et ses massifs fleuris."
     ],
     "next": "Étape suivante",
     "prev": "Étape précédente",
     "restart": "Revoir depuis le début",
     "loading": "Chargement de la vidéo",
     "goto": "Aller à l'étape",
-    "pause": "Mettre en pause le défilement automatique",
-    "play": "Reprendre le défilement automatique"
+    "hint": "Faites défiler la construction"
   }
 }

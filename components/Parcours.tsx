@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent, type PointerEvent } from "react";
+import { useRef, useState, useSyncExternalStore, type KeyboardEvent, type PointerEvent } from "react";
 
 type Props = {
   lang: string;
@@ -14,8 +14,7 @@ type Props = {
     restart: string;
     loading: string;
     goto: string;
-    pause: string;
-    play: string;
+    hint: string;
   };
 };
 
@@ -24,20 +23,17 @@ const STILLS = ["B", "C", "D", "E", "F", "G"];
 const CLIPS = ["1-BC", "2-CD", "3-DE", "4-EF", "5-FG"];
 const LAST = STILLS.length - 1;
 
-// Réglages faciles à retirer : mettre CLIP_RATE à 1 rend les clips à leur durée d'origine (~5,2 s)
+// Mettre CLIP_RATE à 1 rend les clips à leur durée d'origine (~5,2 s)
 const CLIP_RATE = 1.49; // ~3,5 s par clip
-const AUTOPLAY = 3500; // ms passées sur une étape avant de lancer la suivante
 
 // Téléphone en portrait : on sert les médias 9:16 (fichiers mobile-*)
 const MOBILE = "(max-width: 899px) and (orientation: portrait)";
-const REDUCED = "(prefers-reduced-motion: reduce)";
 const watch = (q: string) => (cb: () => void) => {
   const mq = window.matchMedia(q);
   mq.addEventListener("change", cb);
   return () => mq.removeEventListener("change", cb);
 };
 const watchMobile = watch(MOBILE);
-const watchReduced = watch(REDUCED);
 
 const Chevron = ({ dir }: { dir: "left" | "right" }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
@@ -45,22 +41,15 @@ const Chevron = ({ dir }: { dir: "left" | "right" }) => (
   </svg>
 );
 
-const PlayPause = ({ paused }: { paused: boolean }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d={paused ? "M8 5l11 7-11 7z" : "M7 5h4v14H7zM13 5h4v14h-4z"} />
-  </svg>
-);
-
 export default function Parcours({ lang, hero, parcours }: Props) {
   // null tant que la page n'est pas hydratée : les vidéos n'ont alors pas de src, donc aucun téléchargement en double
   const mobile = useSyncExternalStore<boolean | null>(watchMobile, () => window.matchMedia(MOBILE).matches, () => null);
-  const reduced = useSyncExternalStore(watchReduced, () => window.matchMedia(REDUCED).matches, () => false);
   const [index, setIndex] = useState(0); // étape du texte, du point actif et de l'annonce : change tout de suite
   const [shown, setShown] = useState(0); // image affichée : change à la fin du clip
   const [moved, setMoved] = useState(false); // vrai après un premier changement d'étape (pour l'animation du texte)
-  const [auto, setAuto] = useState(true); // lecture automatique
   const [playing, setPlaying] = useState<number | null>(null); // clip en cours
   const [waiting, setWaiting] = useState(false); // clip lancé mais pas encore en lecture
+  const [dur, setDur] = useState(5.2 / CLIP_RATE); // durée du clip en cours, en secondes (pour le trait de progression)
   const videos = useRef<(HTMLVideoElement | null)[]>([]);
   const pointer = useRef<{ x: number; y: number } | null>(null);
   const busy = playing !== null; // un clip joue : on ignore les nouvelles navigations pour ne pas désynchroniser
@@ -88,6 +77,7 @@ export default function Parcours({ lang, hero, parcours }: Props) {
     setPlaying(from);
     setWaiting(true);
     v.currentTime = 0;
+    setDur((Number.isFinite(v.duration) ? v.duration : 5.2) / CLIP_RATE);
     v.defaultPlaybackRate = CLIP_RATE;
     v.playbackRate = CLIP_RATE;
     // shortcut: si la vidéo échoue, on passe à l'image fixe de l'étape suivante pour ne jamais bloquer
@@ -110,16 +100,7 @@ export default function Parcours({ lang, hero, parcours }: Props) {
     else jump(j);
   };
 
-  // lecture automatique : étape suivante après AUTOPLAY ms, s'arrête à la dernière étape
-  useEffect(() => {
-    if (!auto || reduced || busy || last) return;
-    const t = setTimeout(next, AUTOPLAY);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auto, reduced, busy, index]);
-
   const onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "ArrowRight" || e.key === "ArrowLeft") setAuto(false);
     if (e.key === "ArrowRight") next();
     if (e.key === "ArrowLeft") prev();
   };
@@ -147,10 +128,7 @@ export default function Parcours({ lang, hero, parcours }: Props) {
       aria-label={parcours.label}
       tabIndex={0}
       onKeyDown={onKeyDown}
-      onPointerDown={(e) => {
-        setAuto(false); // le premier toucher ou clic arrête la lecture automatique
-        pointer.current = { x: e.clientX, y: e.clientY };
-      }}
+      onPointerDown={(e) => (pointer.current = { x: e.clientX, y: e.clientY })}
       onPointerUp={onPointerUp}
       onPointerCancel={() => (pointer.current = null)}
     >
@@ -204,6 +182,15 @@ export default function Parcours({ lang, hero, parcours }: Props) {
                 {hero.cta}
               </Link>
             )}
+            {first && !moved && (
+              <p className="hint">
+                {parcours.hint}
+                <Chevron dir="right" />
+              </p>
+            )}
+          </div>
+          <div className="trace-box" aria-hidden="true">
+            {playing !== null && !waiting && <span key={playing} className="trace" style={{ animationDuration: `${dur}s` }} />}
           </div>
           <p className="sr-only" aria-live="polite">
             {title}. {desc}
@@ -227,17 +214,6 @@ export default function Parcours({ lang, hero, parcours }: Props) {
               />
             ))}
           </div>
-          {!reduced && (
-            <button
-              type="button"
-              className="icon-btn"
-              onPointerDown={(e) => e.stopPropagation()}
-              onClick={() => setAuto(!auto)}
-              aria-label={auto ? parcours.pause : parcours.play}
-            >
-              <PlayPause paused={!auto} />
-            </button>
-          )}
           {last ? (
             <button type="button" className="btn btn-outline" onClick={() => goTo(0)} disabled={busy}>
               {parcours.restart}
