@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState, useSyncExternalStore, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent, type PointerEvent } from "react";
 
 type Props = {
   lang: string;
@@ -22,6 +22,7 @@ type Props = {
 const STILLS = ["B", "C", "D", "E", "F", "G"];
 const CLIPS = ["1-BC", "2-CD", "3-DE", "4-EF", "5-FG"];
 const LAST = STILLS.length - 1;
+const CLIP_GAP_MS = 3000;
 
 // Les sources durent environ 5,2 s : cette vitesse les ramène à ~3 s.
 const CLIP_RATE = 1.73;
@@ -49,10 +50,12 @@ export default function Parcours({ lang, hero, parcours }: Props) {
   const [moved, setMoved] = useState(false); // vrai après un premier changement d'étape (pour l'animation du texte)
   const [playing, setPlaying] = useState<number | null>(null); // clip en cours
   const [waiting, setWaiting] = useState(false); // clip lancé mais pas encore en lecture
+  const [autoAdvance, setAutoAdvance] = useState(false); // pause de trois secondes entre deux clips
   const [progress, setProgress] = useState(0); // progression cumulée des cinq clips
   const videos = useRef<(HTMLVideoElement | null)[]>([]);
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pointer = useRef<{ x: number; y: number } | null>(null);
-  const busy = playing !== null; // un clip joue : on ignore les nouvelles navigations pour ne pas désynchroniser
+  const busy = playing !== null || autoAdvance; // un clip ou sa pause joue : on ignore les navigations
   const first = index === 0;
   const last = index === LAST;
 
@@ -62,12 +65,18 @@ export default function Parcours({ lang, hero, parcours }: Props) {
   };
 
   const finish = (to: number) => {
+    if (advanceTimer.current !== null) clearTimeout(advanceTimer.current);
+    advanceTimer.current = null;
     setShown(to);
     setPlaying(null);
     setWaiting(false);
+    setAutoAdvance(false);
     setProgress(to / CLIPS.length);
   };
   const playClip = (from: number) => {
+    if (advanceTimer.current !== null) clearTimeout(advanceTimer.current);
+    advanceTimer.current = null;
+    setAutoAdvance(false);
     const to = from + 1;
     step(to); // le texte change tout de suite, le clip n'est qu'une transition visuelle
     const v = videos.current[from];
@@ -81,6 +90,9 @@ export default function Parcours({ lang, hero, parcours }: Props) {
     // shortcut: si la vidéo échoue, on passe à l'image fixe de l'étape suivante pour ne jamais bloquer
     v.play().catch(() => finish(to));
   };
+  useEffect(() => () => {
+    if (advanceTimer.current !== null) clearTimeout(advanceTimer.current);
+  }, []);
   const next = () => {
     if (busy || last) return;
     playClip(index);
@@ -158,8 +170,8 @@ export default function Parcours({ lang, hero, parcours }: Props) {
             muted
             playsInline
             aria-hidden="true"
-            // shortcut: on précharge seulement le clip courant et le suivant
-            preload={i <= index + 1 ? "auto" : "none"}
+            // shortcut: le navigateur peut limiter le préchargement, mais on lui demande le clip actif et les deux suivants
+            preload={i >= (playing ?? index) && i <= (playing ?? index) + 2 ? "auto" : "none"}
             className={`clip${playing === i && !waiting ? " on" : ""}`}
             onPlaying={() => setWaiting(false)}
             onTimeUpdate={(e) => {
@@ -171,8 +183,16 @@ export default function Parcours({ lang, hero, parcours }: Props) {
               if (playing !== i) return;
               const to = i + 1;
               setShown(to);
-              if (to < LAST) playClip(to);
-              else finish(to);
+              setProgress(to / CLIPS.length);
+              if (to < LAST) {
+                setPlaying(null);
+                setWaiting(false);
+                setAutoAdvance(true);
+                advanceTimer.current = setTimeout(() => {
+                  advanceTimer.current = null;
+                  playClip(to);
+                }, CLIP_GAP_MS);
+              } else finish(to);
             }}
             onError={() => playing === i && finish(i + 1)}
           />
