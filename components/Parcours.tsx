@@ -23,8 +23,8 @@ const STILLS = ["B", "C", "D", "E", "F", "G"];
 const CLIPS = ["1-BC", "2-CD", "3-DE", "4-EF", "5-FG"];
 const LAST = STILLS.length - 1;
 
-// Mettre CLIP_RATE à 1 rend les clips à leur durée d'origine (~5,2 s)
-const CLIP_RATE = 1.49; // ~3,5 s par clip
+// Les sources durent environ 5,2 s : cette vitesse les ramène à ~3 s.
+const CLIP_RATE = 1.73;
 
 // Téléphone en portrait : on sert les médias 9:16 (fichiers mobile-*)
 const MOBILE = "(max-width: 899px) and (orientation: portrait)";
@@ -49,7 +49,7 @@ export default function Parcours({ lang, hero, parcours }: Props) {
   const [moved, setMoved] = useState(false); // vrai après un premier changement d'étape (pour l'animation du texte)
   const [playing, setPlaying] = useState<number | null>(null); // clip en cours
   const [waiting, setWaiting] = useState(false); // clip lancé mais pas encore en lecture
-  const [dur, setDur] = useState(5.2 / CLIP_RATE); // durée du clip en cours, en secondes (pour le trait de progression)
+  const [progress, setProgress] = useState(0); // progression cumulée des cinq clips
   const videos = useRef<(HTMLVideoElement | null)[]>([]);
   const pointer = useRef<{ x: number; y: number } | null>(null);
   const busy = playing !== null; // un clip joue : on ignore les nouvelles navigations pour ne pas désynchroniser
@@ -65,28 +65,31 @@ export default function Parcours({ lang, hero, parcours }: Props) {
     setShown(to);
     setPlaying(null);
     setWaiting(false);
+    setProgress(to / CLIPS.length);
   };
-
-  const next = () => {
-    if (busy || last) return;
-    const from = index;
-    const to = index + 1;
+  const playClip = (from: number) => {
+    const to = from + 1;
     step(to); // le texte change tout de suite, le clip n'est qu'une transition visuelle
     const v = videos.current[from];
-    if (!v) return setShown(to);
+    if (!v) return finish(to);
     setPlaying(from);
     setWaiting(true);
     v.currentTime = 0;
-    setDur((Number.isFinite(v.duration) ? v.duration : 5.2) / CLIP_RATE);
+    setProgress(from / CLIPS.length);
     v.defaultPlaybackRate = CLIP_RATE;
     v.playbackRate = CLIP_RATE;
     // shortcut: si la vidéo échoue, on passe à l'image fixe de l'étape suivante pour ne jamais bloquer
     v.play().catch(() => finish(to));
   };
+  const next = () => {
+    if (busy || last) return;
+    playClip(index);
+  };
 
   const jump = (to: number) => {
     step(to);
     setShown(to); // fondu vers l'image de l'étape, pas de lecture à l'envers
+    setProgress(to / CLIPS.length);
   };
 
   const prev = () => {
@@ -159,7 +162,18 @@ export default function Parcours({ lang, hero, parcours }: Props) {
             preload={i <= index + 1 ? "auto" : "none"}
             className={`clip${playing === i && !waiting ? " on" : ""}`}
             onPlaying={() => setWaiting(false)}
-            onEnded={() => playing === i && finish(i + 1)}
+            onTimeUpdate={(e) => {
+              if (playing === i && e.currentTarget.duration > 0) {
+                setProgress((i + e.currentTarget.currentTime / e.currentTarget.duration) / CLIPS.length);
+              }
+            }}
+            onEnded={() => {
+              if (playing !== i) return;
+              const to = i + 1;
+              setShown(to);
+              if (to < LAST) playClip(to);
+              else finish(to);
+            }}
             onError={() => playing === i && finish(i + 1)}
           />
         ))}
@@ -169,6 +183,9 @@ export default function Parcours({ lang, hero, parcours }: Props) {
           </div>
         )}
         <div className="shade" />
+        <div className="progress-track" aria-hidden="true">
+          <span className="progress-fill" style={{ transform: `scaleX(${progress})` }} />
+        </div>
       </div>
 
       <div className="panel">
@@ -188,9 +205,6 @@ export default function Parcours({ lang, hero, parcours }: Props) {
                 <Chevron dir="right" />
               </p>
             )}
-          </div>
-          <div className="trace-box" aria-hidden="true">
-            {playing !== null && !waiting && <span key={playing} className="trace" style={{ animationDuration: `${dur}s` }} />}
           </div>
           <p className="sr-only" aria-live="polite">
             {title}. {desc}

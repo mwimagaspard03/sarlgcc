@@ -115,9 +115,9 @@ button.btn { font: inherit; font-weight: 600; cursor: pointer; }
 /* Quadrillage de plan, très discret : or à ~9 %, qui s'estompe vers le bas où se trouve le texte */
 .stage::after { content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none; background-image: linear-gradient(to right, rgba(200, 164, 90, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(200, 164, 90, 0.09) 1px, transparent 1px); background-size: 3rem 3rem; -webkit-mask-image: linear-gradient(to bottom, #000, transparent 75%); mask-image: linear-gradient(to bottom, #000, transparent 75%); }
 
-/* Trait de progression sous le texte pendant un clip : la place est toujours réservée pour que le texte ne saute pas */
-.trace-box { height: 2px; margin-top: 1rem; max-width: 14rem; }
-.trace { display: block; height: 100%; background: var(--gold); transform-origin: left; }
+/* Une barre continue représente la progression cumulée des cinq clips. */
+.progress-track { position: absolute; z-index: 6; inset: auto 0 0; height: 3px; background: rgba(255, 255, 255, 0.2); }
+.progress-fill { display: block; width: 100%; height: 100%; background: var(--gold); transform-origin: left; transition: transform 0.08s linear; }
 
 /* Invitation à défiler au premier écran */
 .hint { display: flex; align-items: center; gap: 0.4rem; margin: 1rem 0 0; font-size: 0.95rem; color: var(--gold); letter-spacing: 0.02em; }
@@ -125,15 +125,13 @@ button.btn { font: inherit; font-weight: 600; cursor: pointer; }
 
 /* Changement d'étape : le texte apparaît en glissant légèrement (désactivé si l'utilisateur réduit les animations) */
 @keyframes copy-in { from { opacity: 0; transform: translateY(0.6rem); } }
-@keyframes trace { from { transform: scaleX(0); } }
 @keyframes nudge { 50% { transform: translateX(0.35rem); } }
 @media (prefers-reduced-motion: no-preference) {
   .copy-in { animation: copy-in 0.25s ease-out; }
-  .trace { animation: trace linear forwards; }
   .hint svg { animation: nudge 1.6s ease-in-out infinite; }
 }
 
-@media (min-width: 900px) and (min-aspect-ratio: 3 / 2) {
+@media (min-width: 900px) {
   .stage { aspect-ratio: auto; height: min(84svh, 780px); }
   .stage img, .stage video { object-position: 50% 65%; }
   .shade { display: block; }
