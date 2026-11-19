@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { hardenCookie } from "./cookies";
 import { getSupabaseEnv } from "./env";
 
 // Client Supabase côté serveur, lié aux cookies du visiteur (donc soumis aux règles de sécurité de la base).
@@ -13,7 +14,7 @@ export async function createClient() {
       getAll: () => cookieStore.getAll(),
       setAll: (cookiesToSet) => {
         try {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, hardenCookie(options)));
         } catch {
           // appelé depuis un composant serveur : le proxy se charge de rafraîchir la session
         }

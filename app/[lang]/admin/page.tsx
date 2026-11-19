@@ -1,6 +1,9 @@
 import { redirect } from "next/navigation";
 import { getAdminContext } from "@/lib/supabase/auth";
 import { signOut } from "./actions";
+import AdminNav from "./AdminNav";
+import StatusForm from "./StatusForm";
+import { setQuoteStatus, setRequestStatus } from "./actions-gestion";
 
 type Quote = {
   id: string;
@@ -26,6 +29,8 @@ type VendorRequest = {
 
 const QUOTE_STATUS = { new: "Nouveau", forwarded: "Transmis", closed: "Clos" } as const;
 const REQUEST_STATUS = { new: "Nouvelle", created: "Compte créé", rejected: "Refusée" } as const;
+const QUOTE_OPTIONS = { new: "Remettre en nouveau", forwarded: "Marquer transmis", closed: "Marquer clos" };
+const REQUEST_OPTIONS = { new: "Remettre en nouvelle", created: "Compte créé", rejected: "Refuser" };
 const date = (iso: string) => new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
 function SignOutButton() {
@@ -71,13 +76,9 @@ export default async function AdminPage() {
 
   return (
     <section>
-      <div className="admin-bar">
-        <div>
-          <h1>Tableau de bord</h1>
-          <p className="muted">{role === "owner" ? "Propriétaire" : "Administrateur"}</p>
-        </div>
-        <SignOutButton />
-      </div>
+      <AdminNav role={role} />
+      <h1>Tableau de bord</h1>
+      <p className="muted">{role === "owner" ? "Propriétaire" : "Administrateur"}</p>
 
       <h2>Demandes de devis</h2>
       {quotesRes.error ? (
@@ -101,6 +102,7 @@ export default async function AdminPage() {
                 </p>
               )}
               <p>{q.message}</p>
+              <StatusForm action={setQuoteStatus} id={q.id} current={q.status} options={QUOTE_OPTIONS} />
             </li>
           ))}
         </ul>
@@ -123,6 +125,7 @@ export default async function AdminPage() {
               </p>
               {(r.business_name || r.city) && <p className="muted">{[r.business_name, r.city].filter(Boolean).join(" · ")}</p>}
               {r.message && <p>{r.message}</p>}
+              <StatusForm action={setRequestStatus} id={r.id} current={r.status} options={REQUEST_OPTIONS} />
             </li>
           ))}
         </ul>

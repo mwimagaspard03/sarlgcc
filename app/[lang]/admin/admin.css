@@ -13,3 +13,16 @@
 .admin-form input { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 0.4rem; padding: 0.7rem 0.8rem; min-height: 44px; }
 .admin-form input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .admin-error { color: #e8a0a0; }
+
+/* B2a : navigation, boutons d'action, mot de passe provisoire */
+.admin-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem 1.4rem; margin-bottom: 1.5rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); }
+.admin-nav form { margin: 0; }
+.admin-nav a, .admin-link-btn { color: var(--gold); font: inherit; background: none; border: 0; padding: 0.6rem 0; min-height: 44px; display: inline-flex; align-items: center; cursor: pointer; text-decoration: none; }
+.admin-nav a:hover, .admin-link-btn:hover { text-decoration: underline; }
+.admin-nav a:focus-visible, .admin-link-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.admin-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.7rem; }
+.admin-actions form { margin: 0; }
+.btn-small { padding: 0.5rem 0.9rem; font-size: 0.85rem; min-height: 44px; }
+.admin-form textarea { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 0.4rem; padding: 0.7rem 0.8rem; resize: vertical; }
+.admin-form textarea:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.admin-pass { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.15rem; letter-spacing: 0.05em; user-select: all; background: var(--ink); padding: 0.2rem 0.5rem; border: 1px solid var(--line); border-radius: 0.3rem; }
